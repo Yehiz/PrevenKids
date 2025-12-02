@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrevenKids</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+  <body>
+    <body>
+    <!-- NAVEGACIÓN -->
+    <header>
+        <div class="logo" onclick="app.navigate('landing')">
+            <i class="fas fa-heartbeat"></i> PrevenKids
+        </div>
+        <nav id="main-nav">
+            <!-- Los items del menú se inyectan via JS según el rol -->
+        </nav>
+        <div class="acciones" id="auth-buttons">
+            <button onclick="app.navigate('login')" class="btn outline">Inicia Sesión</button>
+            <button onclick="app.navigate('register')" class="btn amarillo">Regístrate</button>
+        </div>
+        <div class="acciones" id="user-profile" style="display: none;">
+            <span id="user-name" style="margin-right: 15px; font-weight: bold;">Usuario</span>
+            <button onclick="app.logout()" class="btn rojo">Salir</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- VISTA: LANDING PAGE -->
+        <section id="view-landing" class="view-section active">
+            <div class="hero">
+                <div class="texto">
+                    <h1>Prevención y salud real para tus hijos</h1>
+                    <p>Registra datos médicos, controla la alimentación y recibe alertas tempranas de riesgo metabólico. Todo en una sola app.</p>
+                    <br>
+                    <button onclick="app.navigate('register')" class="btn azul">Comenzar Ahora</button>
+                </div>
+                <div class="imagen">
+                    <!-- Placeholder image con FontAwesome -->
+                    <div style="font-size: 10rem; color: var(--light-blue);"><i class="fas fa-user-md"></i></div>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; color: var(--primary-blue);">Funcionalidades Principales</h2>
+            <br>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>Cálculo de IMC</h3>
+                    <p>Monitoreo preciso basado en peso y talla infantil.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>Dieta y Nutrición</h3>
+                    <p>Registro de comidas y alertas de calorías.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-nurse"></i>
+                    <h3>Conexión Médica</h3>
+                    <p>Chat y seguimiento con profesionales de la salud.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Comunidad</h3>
+                    <p>Foros para padres y material educativo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: REGISTRO / LOGIN (US01, US02, US03) -->
+        <section id="view-auth" class="view-section">
+            <div class="auth-container">
+                <h2 id="auth-title" style="text-align: center; color: var(--primary-blue);">Registro de Usuario</h2>
+                <form id="auth-form" onsubmit="app.handleAuth(event)">
+                    <div class="form-group">
+                        <label>Tipo de Usuario</label>
+                        <select id="user-role" required>
+                            <option value="parent">Padre o Cuidador</option>
+                            <option value="professional">Profesional de Salud</option>
+                            <option value="authority">Autoridad de Salud</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="auth-name" required placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" required>
+                    </div>
+                    <button type="submit" class="btn azul" style="width: 100%;">Ingresar</button>
+                </form>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                    Al registrarte aceptas nuestros términos y condiciones.
+                </p>
+            </div>
+        </section>
+
+        <!-- VISTA: DASHBOARD PADRE (US05, US06, US14, etc.) -->
+        <section id="view-dashboard-parent" class="view-section">
+            <div class="dashboard-header">
+                <h2>Hola, <span class="parent-name">Papá/Mamá</span></h2>
+                <div>
+                    <button class="btn amarillo" onclick="app.showModal('modal-imc')"><i class="fas fa-calculator"></i> Medir IMC</button>
+                    <button class="btn verde" onclick="app.showModal('modal-meal')"><i class="fas fa-utensils"></i> Registrar Comida</button>
+                </div>
+            </div>
+
+            <!-- Alertas (US07, US10, US13, US30) -->
+            <div id="alerts-container">
+                <div class="notification">
+                    <i class="fas fa-exclamation-circle"></i> <strong>Alerta:</strong> Se detectó poca actividad física en los últimos 3 días (US13). ¡Salgan a caminar!
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="border-color: var(--secondary-blue);">
+                    <h3>IMC Actual</h3>
+                    <div class="value">21.5</div>
+                    <small style="color: var(--success);">Peso Saludable</small>
+                </div>
+                <div class="stat-card" style="border-color: var(--success);">
+                    <h3>Actividad Semanal</h3>
+                    <div class="value">120 min</div>
+                    <small>Meta: 150 min</small>
+                </div>
+                <div class="stat-card" style="border-color: var(--warning);">
+                    <h3>Agua Hoy</h3>
+                    <div class="value">4 Vasos</div>
+                    <small>Falta hidratación (US30)</small>
+                </div>
+                <div class="stat-card" style="border-color: var(--danger);">
+                    <h3>Sueño</h3>
+                    <div class="value">7 hrs</div>
+                    <small>Recomendado: 9 hrs</small>
+                </div>
+            </div>
+
+            <div class="dashboard-main">
+                <div class="left-col">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-chart-line"></i> Progreso Semanal (US14)</h3>
+                            <button class="btn outline" style="color:var(--primary-blue); border:1px solid #ddd;">Ver Detalle</button>
+                        </div>
+                        <div style="height: 200px; background: #f8f9fa; display: flex; align-items: flex-end; justify-content: space-around; padding: 10px;">
+                            <!-- Gráfica simulada -->
+                            <div style="width: 30px; height: 60%; background: var(--secondary-blue);" title="Lun"></div>
+                            <div style="width: 30px; height: 80%; background: var(--secondary-blue);" title="Mar"></div>
+                            <div style="width: 30px; height: 40%; background: var(--secondary-blue);" title="Mie"></div>
+                            <div style="width: 30px; height: 90%; background: var(--secondary-blue);" title="Jue"></div>
+                            <div style="width: 30px; height: 70%; background: var(--secondary-blue);" title="Vie"></div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-lightbulb"></i> Recomendaciones (US08, US11)</h3>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <i class="fas fa-apple-alt" style="color: var(--success);"></i> <strong>Nutrición:</strong> Incluye más fibra en el desayuno para mejorar la digestión.
+                            </li>
+                            <li style="padding: 10px; border-bottom: 1px solid #eee;">
+                                <i class="fas fa-running" style="color: var(--secondary-blue);"></i> <strong>Ejercicio:</strong> Prueba una rutina de 20 min de baile hoy. (US15)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-comments"></i> Chat Médico (US18)</h3>
+                        </div>
+                        <div style="height: 200px; overflow-y: auto; border: 1px solid #eee; padding: 10px; margin-bottom: 10px;">
+                            <p><strong>Dr. Silva:</strong> Hola, ¿cómo sigue del dolor de estómago?</p>
+                            <p style="text-align: right; color: var(--secondary-blue);">Mucho mejor, gracias.</p>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" placeholder="Escribe..." style="flex:1; padding: 5px;">
+                            <button class="btn azul"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3>Acciones Rápidas</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <button class="btn outline" style="color: #333; border: 1px solid #ccc; text-align: left;" onclick="alert('Descargando PDF... (US29)')"><i class="fas fa-file-pdf"></i> Descargar Reportes</button>
+                            <button class="btn outline" style="color: #333; border: 1px solid #ccc; text-align: left;" onclick="app.navigate('forum')"><i class="fas fa-users"></i> Ir a Foros (US04)</button>
+                            <button class="btn outline" style="color: #333; border: 1px solid #ccc; text-align: left;" onclick="app.navigate('videos')"><i class="fas fa-video"></i> Videos Educativos (US17)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: DASHBOARD PROFESIONAL (US19, US35, US36) -->
+        <section id="view-dashboard-pro" class="view-section">
+            <div class="dashboard-header">
+                <h2>Panel Clínico - Dr. <span class="pro-name">Médico</span></h2>
+                <button class="btn azul"><i class="fas fa-user-plus"></i> Registrar Paciente (US36)</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Pacientes Asignados</h3>
+                    <div>
+                        <label>Filtrar por Riesgo (US35): </label>
+                        <select onchange="app.filterPatients(this.value)">
+                            <option value="all">Todos</option>
+                            <option value="alto">Alto</option>
+                            <option value="medio">Medio</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Edad</th>
+                            <th>IMC</th>
+                            <th>Riesgo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient-list">
+                        <!-- JS Populate -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- VISTA: FOROS (US04) -->
+        <section id="view-forum" class="view-section">
+            <h2>Foro de Padres</h2>
+            <button class="btn azul" onclick="app.navigate('dashboard-parent')" style="margin-bottom: 20px;">Volver al Dashboard</button>
+            
+            <div class="post panel">
+                <div class="post-header">
+                    <div class="avatar">JP</div>
+                    <div>
+                        <strong>Juan Pérez</strong>
+                        <small style="display:block; color: gray;">Hace 2 horas</small>
+                    </div>
+                </div>
+                <p>¿Alguien tiene recomendaciones para loncheras saludables? Mi hijo se aburre de las frutas.</p>
+                <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">
+                    <small><i class="fas fa-comment"></i> 3 Respuestas</small>
+                </div>
+            </div>
+            
+            <div class="post panel">
+                <div class="post-header">
+                    <div class="avatar" style="background: #ffccbc;">MA</div>
+                    <div>
+                        <strong>María Aguilar</strong>
+                        <small style="display:block; color: gray;">Ayer</small>
+                    </div>
+                </div>
+                <p>Comparto esta receta de pancakes de avena, ¡a mis hijos les encantó!</p>
+            </div>
+        </section>
+
+        <!-- VISTA: VIDEOS (US17, US37) -->
+        <section id="view-videos" class="view-section">
+            <h2>Biblioteca Educativa</h2>
+            <button class="btn azul" onclick="app.navigate('dashboard-parent')" style="margin-bottom: 20px;">Volver</button>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div style="height: 120px; background: #ddd; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-play-circle" style="font-size: 3rem; color: #666;"></i>
+                    </div>
+                    <h4>Importancia del Desayuno</h4>
+                    <button class="btn outline" style="color:var(--primary-blue); margin-top:10px;">Ver Video</button>
+                    <button class="btn outline" style="color:var(--accent-yellow);"><i class="fas fa-star"></i></button>
+                </div>
+                <div class="feature-card">
+                    <div style="height: 120px; background: #ddd; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-play-circle" style="font-size: 3rem; color: #666;"></i>
+                    </div>
+                    <h4>Ejercicios en Casa</h4>
+                    <button class="btn outline" style="color:var(--primary-blue); margin-top:10px;">Ver Video</button>
+                    <button class="btn outline" style="color:var(--accent-yellow);"><i class="fas fa-star"></i></button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER CON REDES SOCIALES (REQUERIDO) -->
+    <footer>
+        <div class="footer-content">
+            <div class="social-icons">
+                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p>© 2025 Vitalia Tech — PrevenKids</p>
+            <p style="font-size: 0.8rem; color: #777;">Desarrollado para la prevención de la salud infantil.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
